@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/new_file"
+        android:enabled="true"
+        android:icon="@drawable/ic_new_file"
+        android:title="Новый"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/open_file"
+        android:enabled="true"
+        android:icon="@drawable/ic_open"
+        android:title="Открыть"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/save_as_file"
+        android:icon="@drawable/ic_save"
+        android:title="Сохранить как"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/print"
+        android:icon="@drawable/ic_print"
+        android:title="Печать"
+        app:showAsAction="never" />
+
+</menu>
