@@ -5,6 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.TextView
 import danzo.damir.busstationarm.R
@@ -18,6 +19,9 @@ class Adapter(context: Context, dataMessage: ArrayList<FileModel>) :
     init {
         dataM = dataMessage
         mContext = context
+    }
+    fun setOnItemClickListener(listener: AdapterView.OnItemClickListener) {
+        mListener = listener
     }
 
     @SuppressLint("ViewHolder")
@@ -53,5 +57,9 @@ class Adapter(context: Context, dataMessage: ArrayList<FileModel>) :
     private class ViewHolder(view:View){
         var textView:TextView=view.findViewById<TextView>(R.id.file_name) as TextView
 
+    }
+    companion object {
+
+        private var mListener: AdapterView.OnItemClickListener? = null
     }
 }

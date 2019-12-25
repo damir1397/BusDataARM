@@ -17,6 +17,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/change"
+        android:enabled="true"
         android:icon="@drawable/ic_change"
         android:title="Редактировать"
         app:showAsAction="never" />

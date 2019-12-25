@@ -15,6 +15,7 @@ import danzo.damir.busstationarm.file.FileModel
 import kotlinx.android.synthetic.main.activity_file_list.*
 import java.io.*
 
+//todo сделать окно для показа содержимого файла
 
 class FileListActivity : AppCompatActivity() {
     private lateinit var dataMessage: ArrayList<FileModel>
@@ -32,34 +33,37 @@ class FileListActivity : AppCompatActivity() {
         racketAdapter = Adapter(this, dataMessage)
 
 
-        listView.adapter=racketAdapter
+        listView.adapter = racketAdapter
 
 
         racketAdapter.notifyDataSetChanged()
 
         popupMenuHome()
-      //  popupMenuEdit()
+        popupMenuEdit()
+        readFile()
         write_file_name.setOnClickListener {
-            constraint_edittext.visibility=View.GONE
+            constraint_edittext.visibility = View.GONE
             dataMessage.add(FileModel(FILENAME))
-            FILENAME=file_name.text.toString()
+            FILENAME = file_name.text.toString()
             writeFile()
         }
+
     }
+
     fun popupMenuHome() {
         var moreMenu: Int = 0
         menuImage.setOnClickListener {
-            val context: Context = ContextThemeWrapper(this, R.style.PopupMenuHome) //добавление стиля для красного фона
+            val context: Context = ContextThemeWrapper(
+                this,
+                R.style.PopupMenuHome
+            ) //добавление стиля для красного фона
             val popupMenu = PopupMenu(context, it)
 
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    /*R.id.action_start_call4_doctor_activity -> {
-                        startActivity(Intent(this, DetailCall4DoctorActivity::class.java))//ссылка для перехода на активити доктор
-                        true
-                    }*/
+
                     R.id.new_file -> {
-                        constraint_edittext.visibility= View.VISIBLE
+                        constraint_edittext.visibility = View.VISIBLE
                         true
                     }
                     R.id.open_file -> {
@@ -68,7 +72,7 @@ class FileListActivity : AppCompatActivity() {
                     }
 
                     R.id.print -> {
-                        readFileSD()
+
                         true
                     }
 
@@ -76,13 +80,7 @@ class FileListActivity : AppCompatActivity() {
                 }
             }
 
-
-                moreMenu = R.menu.menu
-
-            // для проверки вызова если есть то всплывающее меню работает
-            /* val callJson = Prefs.getString(StorageUtils.NEW_CALL_JSON, "")
-             val callDeliveredTime = Prefs.getString(StorageUtils.NEW_CALL_DELIVERED_TIME, "")
-             if (callJson.isNotEmpty() && callDeliveredTime.isNotEmpty()) {*/
+            moreMenu = R.menu.menu
             popupMenu.inflate(moreMenu)
             //}
 
@@ -109,20 +107,17 @@ class FileListActivity : AppCompatActivity() {
 
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
-                    /*R.id.action_start_call4_doctor_activity -> {
-                        startActivity(Intent(this, DetailCall4DoctorActivity::class.java))//ссылка для перехода на активити доктор
-                        true
-                    }*/
+
                     R.id.paste -> {
-                        writeFileSD()
+
                         true
                     }
                     R.id.delet -> {
-                        readFile()
+                        
                         true
                     }
                     R.id.change -> {
-                        readFile()
+
                         true
                     }
 
@@ -130,13 +125,8 @@ class FileListActivity : AppCompatActivity() {
                 }
             }
 
-
             moreMenu = R.menu.edit_menu
 
-            // для проверки вызова если есть то всплывающее меню работает
-            /* val callJson = Prefs.getString(StorageUtils.NEW_CALL_JSON, "")
-             val callDeliveredTime = Prefs.getString(StorageUtils.NEW_CALL_DELIVERED_TIME, "")
-             if (callJson.isNotEmpty() && callDeliveredTime.isNotEmpty()) {*/
             popupMenu.inflate(moreMenu)
             //}
 
@@ -154,6 +144,7 @@ class FileListActivity : AppCompatActivity() {
             }
         }
     }
+
     fun writeFile() {
         try { // отрываем поток для записи
             val bw = BufferedWriter(
@@ -173,22 +164,23 @@ class FileListActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-    fun deletfile() {
-        deleteFile("")
+
+    fun deletfile(str:String) {
+        deleteFile(str)
     }
 
     fun readFile() {
-        try { // открываем поток для чтения
-
+        try {
+            // открываем поток для чтения
             val br = BufferedReader(
                 InputStreamReader(
                     openFileInput(FILENAME)
-
                 )
             )
             var str: String? = ""
             // читаем содержимое
             while (br.readLine().also({ str = it }) != null) {
+
                 Log.d(LOG_TAG, str)
                 dataMessage.add(FileModel(str.toString()))
             }
@@ -199,65 +191,7 @@ class FileListActivity : AppCompatActivity() {
         }
     }
 
-    fun writeFileSD() { // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED
-            )
-        ) {
-            ToastUtils.showLong("SD-карта не доступна: " + Environment.getExternalStorageState())
-            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState())
-            return
-        }
-        // получаем путь к SD
-        var sdPath: File = Environment.getExternalStorageDirectory()
-        // добавляем свой каталог к пути
-        sdPath = File(sdPath.getAbsolutePath().toString() + "/" + DIR_SD)
-        // создаем каталог
-        sdPath.mkdirs()
-        // формируем объект File, который содержит путь к файлу
-        val sdFile = File(sdPath, FILENAME_SD)
-        try { // открываем поток для записи
-            val bw = BufferedWriter(FileWriter(sdFile))
 
-            // пишем данные
-            bw.write("Содержимое файла на SD")
-            // закрываем поток
-            bw.close()
-            ToastUtils.showLong("Файл записан на SD: " + sdFile.getAbsolutePath())
-            Log.d(LOG_TAG, "Файл записан на SD: " + sdFile.getAbsolutePath())
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
 
-    fun readFileSD() { // проверяем доступность SD
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED
-            )
-        ) {
-            ToastUtils.showLong("SD-карта не доступна: " + Environment.getExternalStorageState())
-            Log.d(LOG_TAG, "SD-карта не доступна: " + Environment.getExternalStorageState())
-            return
-        }
-        // получаем путь к SD
-        var sdPath: File = Environment.getExternalStorageDirectory()
-        // добавляем свой каталог к пути
-        sdPath = File(sdPath.getAbsolutePath().toString() + "/" + DIR_SD)
-        // формируем объект File, который содержит путь к файлу
-        val sdFile = File(sdPath, FILENAME_SD)
-        try { // открываем поток для чтения
-            val br = BufferedReader(FileReader(sdFile))
-            var str: String? = ""
-            // читаем содержимое
-            while (br.readLine().also({ str = it }) != null) {
-                Log.d(LOG_TAG, str)
-                ToastUtils.showLong( str)
 
-            }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
 }

@@ -13,7 +13,7 @@ class DataBase(context: Context?) :
     ) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
-            "create table " + TABLE_CONTACTS + "("
+            "create table " + TABLE_BUS + "("
                     + KEY_ID + " integer primary key,"
                     + NAME_STOP + " text,"
                     + ROUTE + " text"
@@ -29,14 +29,14 @@ class DataBase(context: Context?) :
         oldVersion: Int,
         newVersion: Int
     ) {
-        db.execSQL("drop table if exists $TABLE_CONTACTS")
+        db.execSQL("drop table if exists $TABLE_BUS")
         onCreate(db)
     }
 
     companion object {
         const val DATABASE_VERSION = 1
         const val DATABASE_NAME = "contactDb"
-        const val TABLE_CONTACTS = "contacts"
+        const val TABLE_BUS = "contacts"
         const val KEY_ID = "_id"
         const val NAME_STOP: String = "nameOFStop"
         const val ROUTE: String = "route"
