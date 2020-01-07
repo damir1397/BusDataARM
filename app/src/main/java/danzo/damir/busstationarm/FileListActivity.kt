@@ -1,8 +1,8 @@
 package danzo.damir.busstationarm
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -20,19 +20,22 @@ import java.io.*
 class FileListActivity : AppCompatActivity() {
     private lateinit var dataMessage: ArrayList<FileModel>
     private lateinit var racketAdapter: Adapter
-    val LOG_TAG = "myLogs"
-    var FILENAME = ""
-    val DIR_SD = "MyFiles"
-    val FILENAME_SD = "fileSD"
+    private val LOG_TAG = "myLogs"
+    private var FILENAME = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_list)
         val listView = findViewById<ListView>(R.id.lisr_view)
-        dataMessage = ArrayList<FileModel>()
+        dataMessage = ArrayList()
         racketAdapter = Adapter(this, dataMessage)
 
 
+        back_list.setOnClickListener {
+            finish()
+            startActivity(Intent(this,MenuActivity::class.java))
+        }
         listView.adapter = racketAdapter
 
 
@@ -102,7 +105,10 @@ class FileListActivity : AppCompatActivity() {
     fun popupMenuEdit() {
         var moreMenu: Int = 0
         menuEdir.setOnClickListener {
-            val context: Context = ContextThemeWrapper(this, R.style.PopupMenuHome) //добавление стиля для красного фона
+            val context: Context = ContextThemeWrapper(
+                this,
+                R.style.PopupMenuHome
+            ) //добавление стиля для красного фона
             val popupMenu = PopupMenu(context, it)
 
             popupMenu.setOnMenuItemClickListener { item ->
@@ -113,7 +119,7 @@ class FileListActivity : AppCompatActivity() {
                         true
                     }
                     R.id.delet -> {
-                        
+
                         true
                     }
                     R.id.change -> {
@@ -165,7 +171,7 @@ class FileListActivity : AppCompatActivity() {
         }
     }
 
-    fun deletfile(str:String) {
+    fun deletfile(str: String) {
         deleteFile(str)
     }
 
@@ -190,8 +196,6 @@ class FileListActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-
 
 
 }

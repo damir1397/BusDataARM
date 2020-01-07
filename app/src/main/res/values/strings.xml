@@ -4,8 +4,8 @@
     <string name="prise_b">Цена билета</string>
     <string name="kol_mest_bus">Количество мес т в автобусе</string>
     <string name="movement_time_to_stop">Время движения до остановки</string>
-    <string name="route">Маршрут</string>
-    <string name="name_stop">Название остановки</string>
+    <string name="route">Конец остановки</string>
+    <string name="name_stop">Начало остановки</string>
     <string name="delet">Удалить</string>
     <string name="add">Добавить</string>
     <string name="manipul_data">Управление данными</string>

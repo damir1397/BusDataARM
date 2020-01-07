@@ -19,8 +19,8 @@
             android:id="@+id/menuImage"
             android:layout_width="30dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_menu"
             android:layout_marginStart="10dp"
+            android:src="@drawable/ic_menu"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="MissingConstraints" />
 
@@ -33,22 +33,35 @@
             app:layout_constraintStart_toEndOf="@+id/menuImage"
             tools:ignore="MissingConstraints" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Список файлов"
+            android:textAlignment="center"
+            android:textColor="@color/whiteColor"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/menuEdir"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ListView
-        android:layout_marginTop="50dp"
         android:id="@+id/lisr_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint_edittext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:visibility="gone"
         android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/border_button_file"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,10 +71,10 @@
             android:id="@+id/file_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginEnd="40dp"
             android:layout_marginStart="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
             android:hint="Название файла"
-       android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -70,9 +83,9 @@
             android:id="@+id/write_file_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginStart="40dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="40dp"
-            android:layout_marginStart="40dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/boder_button"
             android:text="Создать файл"
@@ -81,5 +94,17 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <Button
+        android:id="@+id/back_list"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:elevation="4dp"
+        android:drawableEnd="@drawable/ic_exit"
+        android:background="@drawable/border_button_file"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="UnusedAttribute" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

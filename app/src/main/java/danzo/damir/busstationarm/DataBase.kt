@@ -14,13 +14,13 @@ class DataBase(context: Context?) :
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "create table " + TABLE_BUS + "("
-                    + KEY_ID + " integer primary key,"
-                    + NAME_STOP + " text,"
-                    + ROUTE + " text"
-                    + MOVEMENT_TIME_TO_STOP + " text"
-                    + NUMBER_OF_SEATSH + " text"
-                    + TICKET_PRICE + " text"
-                    + NUMBER_FLIGHTS_DAY + " text" + ")"
+                    + KEY_ID + " integer primary key,"   //id
+                    + ROUTE1 + " text,"                  //начало остановки
+                    + ROUTE2 + " text,"                  //конец остановки
+                    + MOVEMENT_TIME_TO_STOP + " text,"   //время до останоки
+                    + NUMBER_OF_SEATS + " text,"         //количество мест
+                    + TICKET_PRICE + " text,"            //цена
+                    + NUMBER_FLIGHTS_DAY + " text" + ")" //сколько рейсов день
         )
     }
 
@@ -34,16 +34,16 @@ class DataBase(context: Context?) :
     }
 
     companion object {
-        const val DATABASE_VERSION = 1
-        const val DATABASE_NAME = "contactDb"
-        const val TABLE_BUS = "contacts"
-        const val KEY_ID = "_id"
-        const val NAME_STOP: String = "nameOFStop"
-        const val ROUTE: String = "route"
-        const val MOVEMENT_TIME_TO_STOP = "movement_time_to_stop"
-        const val NUMBER_OF_SEATSH = "number_of_seats"
-        const val TICKET_PRICE = "ticket_price"
-        const val NUMBER_FLIGHTS_DAY = "number_flights_day"
+        const val DATABASE_VERSION: Int = 1
+        const val DATABASE_NAME: String = "contactDb"
+        const val TABLE_BUS: String = "Contacts"
+        const val KEY_ID: String = "id"
+        const val ROUTE1: String = "nameOFStop"
+        const val ROUTE2: String = "route"
+        const val MOVEMENT_TIME_TO_STOP: String = "movementTimeToStop"
+        const val NUMBER_OF_SEATS: String = "numberSeats"
+        const val TICKET_PRICE: String = "ticketPrice"
+        const val NUMBER_FLIGHTS_DAY: String = "numberFlightsDay"
 
     }
 }
