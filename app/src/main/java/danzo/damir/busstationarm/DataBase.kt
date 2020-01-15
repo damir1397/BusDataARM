@@ -14,7 +14,7 @@ class DataBase(context: Context?) :
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             "create table " + TABLE_BUS + "("
-                    + KEY_ID + " integer primary key,"   //id
+//                    + KEY_ID + " integer primary key,"   //id
                     + ROUTE1 + " text,"                  //начало остановки
                     + ROUTE2 + " text,"                  //конец остановки
                     + MOVEMENT_TIME_TO_STOP + " text,"   //время до останоки
