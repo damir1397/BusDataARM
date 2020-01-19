@@ -1,201 +1,104 @@
 package danzo.damir.busstationarm
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.ContextThemeWrapper
-import android.view.View
-import android.widget.ListView
-import android.widget.PopupMenu
+import android.os.Environment
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
-import com.blankj.utilcode.util.ToastUtils
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.putinbyte.ambulance.utils.LogUtils
 import danzo.damir.busstationarm.file.Adapter
+import danzo.damir.busstationarm.file.ClicListener
 import danzo.damir.busstationarm.file.FileModel
 import kotlinx.android.synthetic.main.activity_file_list.*
-import java.io.*
+import java.io.File
+import java.io.IOException
 
 //todo сделать окно для показа содержимого файла
 
-class FileListActivity : AppCompatActivity() {
+class FileListActivity : AppCompatActivity(), ClicListener {
     private lateinit var dataMessage: ArrayList<FileModel>
-    private lateinit var racketAdapter: Adapter
-    private val LOG_TAG = "myLogs"
+    private lateinit var adapter: Adapter
+    private val LOG_TAG = javaClass.name
     private var FILENAME = ""
-
+    private var FILEREAD = ""
+    lateinit var fileName: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_list)
-        val listView = findViewById<ListView>(R.id.lisr_view)
         dataMessage = ArrayList()
-        racketAdapter = Adapter(this, dataMessage)
+        fileName = findViewById(R.id.file_name)
+
+        //  popupMenuHome()
+        val recyclerViewWard = findViewById<RecyclerView>(R.id.list_view)
+        recyclerViewWard.layoutManager = LinearLayoutManager(this)
+
+        //   /data/data/danzo.damir.busstationarm/files
+
+        val dirName = "/data/data/danzo.damir.busstationarm/files"
+        val folder = File(dirName)
+        try {
+            if (folder.exists()) {
+                val files: Array<File>? = folder.listFiles()
+                files?.forEach { file ->
+                    dataMessage.add(FileModel(file.name))
+                }
+            }
+        } catch (e: Exception) {
+            LogUtils.error(LOG_TAG, e.message)
+        }
+
 
 
         back_list.setOnClickListener {
             finish()
-            startActivity(Intent(this,MenuActivity::class.java))
+            startActivity(Intent(this, MenuActivity::class.java))
         }
-        listView.adapter = racketAdapter
 
-
-        racketAdapter.notifyDataSetChanged()
-
-        popupMenuHome()
-        popupMenuEdit()
-        readFile()
         write_file_name.setOnClickListener {
-            constraint_edittext.visibility = View.GONE
-            dataMessage.add(FileModel(FILENAME))
-            FILENAME = file_name.text.toString()
-            writeFile()
-        }
-
-    }
-
-    fun popupMenuHome() {
-        var moreMenu: Int = 0
-        menuImage.setOnClickListener {
-            val context: Context = ContextThemeWrapper(
-                this,
-                R.style.PopupMenuHome
-            ) //добавление стиля для красного фона
-            val popupMenu = PopupMenu(context, it)
-
-            popupMenu.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-
-                    R.id.new_file -> {
-                        constraint_edittext.visibility = View.VISIBLE
-                        true
-                    }
-                    R.id.open_file -> {
-                        readFile()
-                        true
-                    }
-
-                    R.id.print -> {
-
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-
-            moreMenu = R.menu.menu
-            popupMenu.inflate(moreMenu)
-            //}
-
             try {
-                val fieldPopup = PopupMenu::class.java.getDeclaredField("mPopup")
-                fieldPopup.isAccessible = true
-                val mPopup = fieldPopup.get(popupMenu)
-                mPopup.javaClass
-                    .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                    .invoke(mPopup, true)
-            } catch (e: Exception) {
-                Log.e("Main", "Error menu icon")
-            } finally {
-                popupMenu.show()
-            }
-        }
-    }
+                val getName = fileName?.text.toString()
 
-    fun popupMenuEdit() {
-        var moreMenu: Int = 0
-        menuEdir.setOnClickListener {
-            val context: Context = ContextThemeWrapper(
-                this,
-                R.style.PopupMenuHome
-            ) //добавление стиля для красного фона
-            val popupMenu = PopupMenu(context, it)
-
-            popupMenu.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-
-                    R.id.paste -> {
-
-                        true
-                    }
-                    R.id.delet -> {
-
-                        true
-                    }
-                    R.id.change -> {
-
-                        true
-                    }
-
-                    else -> false
-                }
+                val intent = Intent(this, WriteFileActivity::class.java)
+                intent.putExtra("message", "write")
+                intent.putExtra("filename", getName)
+                startActivity(intent)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
 
-            moreMenu = R.menu.edit_menu
-
-            popupMenu.inflate(moreMenu)
-            //}
-
-            try {
-                val fieldPopup = PopupMenu::class.java.getDeclaredField("mPopup")
-                fieldPopup.isAccessible = true
-                val mPopup = fieldPopup.get(popupMenu)
-                mPopup.javaClass
-                    .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                    .invoke(mPopup, true)
-            } catch (e: Exception) {
-                Log.e("Main", "Error menu icon")
-            } finally {
-                popupMenu.show()
-            }
         }
-    }
 
-    fun writeFile() {
-        try { // отрываем поток для записи
-            val bw = BufferedWriter(
-                OutputStreamWriter(
-                    openFileOutput(FILENAME, Context.MODE_PRIVATE)
-                )
-            )
-            // пишем данные
-            bw.write("Содержимое файла")
-            // закрываем поток
-            bw.close()
-            ToastUtils.showLong("Файл записан")
-            Log.d(LOG_TAG, "Файл записан")
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
+        change_file.setOnClickListener {
+            val getName = fileName?.text.toString()
+            val intent = Intent(this, WriteFileActivity::class.java)
+            intent.putExtra("message", "read")
+            intent.putExtra("filename", getName)
+            startActivity(intent)
         }
+
+        adapter = Adapter(dataMessage, this)
+        adapter.notifyDataSetChanged()
+        recyclerViewWard.adapter = adapter
+
+
     }
 
-    fun deletfile(str: String) {
-        deleteFile(str)
+    override fun mListener(position: Int) {
+        itemName = dataMessage[position].filName
+        println("clik==" + itemName)
+
     }
 
-    fun readFile() {
-        try {
-            // открываем поток для чтения
-            val br = BufferedReader(
-                InputStreamReader(
-                    openFileInput(FILENAME)
-                )
-            )
-            var str: String? = ""
-            // читаем содержимое
-            while (br.readLine().also({ str = it }) != null) {
+    override fun readListener(position: Int) {
+        FILEREAD = dataMessage[position].filName
+        fileName.setText(dataMessage[position].filName)
 
-                Log.d(LOG_TAG, str)
-                dataMessage.add(FileModel(str.toString()))
-            }
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
     }
 
-
+    companion object {
+        var itemName = ""
+    }
 }

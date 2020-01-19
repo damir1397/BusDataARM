@@ -1,65 +1,67 @@
 package danzo.damir.busstationarm.file
 
-import android.annotation.SuppressLint
-import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.BaseAdapter
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.FileUtils.deleteFile
+import com.blankj.utilcode.util.ToastUtils
+import danzo.damir.busstationarm.FileListActivity
 import danzo.damir.busstationarm.R
+import java.io.File
 
-class Adapter(context: Context, dataMessage: ArrayList<FileModel>) :
-    BaseAdapter() {
-    private val dataM: ArrayList<FileModel>
-    private val mContext: Context
-    lateinit var dataMessage: FileModel
-
+class Adapter(var mitems: ArrayList<FileModel>, var recyclerView: ClicListener) :
+    RecyclerView.Adapter<Adapter.ViewHolder>() {
     init {
-        dataM = dataMessage
-        mContext = context
-    }
-    fun setOnItemClickListener(listener: AdapterView.OnItemClickListener) {
-        mListener = listener
+        recyclerViewListener = this.recyclerView
     }
 
-    @SuppressLint("ViewHolder")
-    override fun getView(position: Int, convertview: View?, viewGroup: ViewGroup?): View? {
-        val viewHolder:ViewHolder
-        var rowMain = convertview
-        if (rowMain == null) {
-            val layoutInflater = LayoutInflater.from(mContext)
-            rowMain = layoutInflater.inflate(R.layout.file_add_layout, viewGroup, false)
-            // Create a new view holder instance using convert view
-            viewHolder = ViewHolder(rowMain)
-            rowMain.tag=viewHolder
-        } else{
-            viewHolder=rowMain.tag as ViewHolder
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val view = layoutInflater.inflate(R.layout.file_add_layout, parent, false)
+        return ViewHolder(view, mitems)
+    }
+
+
+    override fun getItemCount(): Int {
+        return mitems.size
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.nameWard.text = mitems[position].filName//для показа в textView
+
+    }
+
+
+    class ViewHolder(view: View, mitems: ArrayList<FileModel>) : RecyclerView.ViewHolder(view) {
+        var nameWard: TextView = view.findViewById(R.id.file_name)
+        var buttonDelet: ImageView = view.findViewById(R.id.deletFile)
+
+
+        init {
+            buttonDelet.setOnClickListener {
+                recyclerViewListener.mListener(adapterPosition)
+                deleteFile(mitems[adapterPosition].filName)
+                ToastUtils.showLong("Файл удален")
+            }
+            nameWard.setOnClickListener {
+                recyclerViewListener.readListener(adapterPosition)
+                ToastUtils.showLong("Файл изменить ")
+                stateAdapter = true
+                nameFileAdapter = mitems[adapterPosition].filName
+                ToastUtils.showLong("Файл изменить ="+nameFileAdapter)
+            }
         }
-        dataMessage=getItem(position)
-
-        viewHolder.textView.text = dataMessage.filName
-        return rowMain
     }
 
-    override fun getItem(position: Int): FileModel {
-        return dataM[position]
-    }
-
-    override fun getItemId(position: Int): Long {
-        return position.toLong()
-    }
-
-    override fun getCount(): Int {
-        return dataM.size
-    }
-    private class ViewHolder(view:View){
-        var textView:TextView=view.findViewById<TextView>(R.id.file_name) as TextView
-
-    }
     companion object {
-
-        private var mListener: AdapterView.OnItemClickListener? = null
+        lateinit var recyclerViewListener: ClicListener
+        var stateAdapter: Boolean = false
+        var nameFileAdapter: String = ""
     }
 }
+
+
